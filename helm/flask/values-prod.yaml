@@ -1,0 +1,7 @@
+replicaCount: 1
+image:
+  repository: gcr.io/grogu-project/flask-app
+  tag: latest
+service:
+  port: 80
+  targetPort: 5000

@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: flask-app-set
+spec:
+  generators:
+    - list:
+        elements:
+          - name: dev
+            cluster: gke-dev
+            valuesFile: values-dev.yaml
+          - name: prod
+            cluster: gke-prod
+            valuesFile: values-prod.yaml
+  template:
+    metadata:
+      name: flask-{{name}}
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/aashishrrjp/flask-app-deploy.git
+        targetRevision: HEAD
+        path: helm/flask
+        helm:
+          valueFiles:
+            - helm/flask/{{valuesFile}}
+      destination:
+        name: '{{cluster}}'
+        namespace: '{{name}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
