@@ -23,7 +23,7 @@ spec:
         path: helm/flask
         helm:
           valueFiles:
-            - helm/flask/{{valuesFile}}
+            - {{valuesFile}}
       destination:
         name: '{{cluster}}'
         namespace: '{{name}}'
