@@ -7,10 +7,10 @@ spec:
     - list:
         elements:
           - name: dev
-            cluster: gke-dev
+            cluster: gke_grogu-project_us-central1-a_gke-dev
             valuesFile: values-dev.yaml
           - name: prod
-            cluster: gke-prod
+            cluster: gke_grogu-project_us-central1-a_gke-prod
             valuesFile: values-prod.yaml
   template:
     metadata:
