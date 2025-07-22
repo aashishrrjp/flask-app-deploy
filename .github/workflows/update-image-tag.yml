@@ -1,0 +1,26 @@
+name: Update Image Tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        required: true
+        type: string
+
+jobs:
+  update-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Update Helm values
+        run: |
+          sed -i "s/tag: .*/tag: ${{ github.event.inputs.image_tag }}/" helm/flask/values-dev.yaml
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git add helm/flask/values-dev.yaml
+          git commit -m "Update image tag to ${{ github.event.inputs.image_tag }}"
+          git push
