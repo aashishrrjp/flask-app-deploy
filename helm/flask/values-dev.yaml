@@ -1,10 +1,8 @@
 replicaCount: 1
-
 image:
   repository: us-central1-docker.pkg.dev/grogu-project/flask-app/flask-app
-  tag: latest
+  tag: f12bebadcf4feb49113792af426e5a957d96c106
   pullPolicy: Always
-
 service:
   port: 80
   targetPort: 5000
