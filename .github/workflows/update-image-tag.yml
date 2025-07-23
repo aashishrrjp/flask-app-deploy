@@ -13,14 +13,29 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Update Helm values
+      - name: Update Helm values (dev and prod)
         run: |
-          sed -i "s/tag: .*/tag: ${{ github.event.inputs.image_tag }}/" helm/flask/values-dev.yaml
+          echo "Updating image tag to ${{ github.event.inputs.image_tag }}"
+
+          sed -i "s/^  tag: .*/  tag: ${{ github.event.inputs.image_tag }}/" helm/flask/values-dev.yaml
+          sed -i "s/^  tag: .*/  tag: ${{ github.event.inputs.image_tag }}/" helm/flask/values-prod.yaml
+
+          echo "Updated values-dev.yaml:"
+          grep "tag:" helm/flask/values-dev.yaml
+
+          echo "Updated values-prod.yaml:"
+          grep "tag:" helm/flask/values-prod.yaml
 
       - name: Commit and push changes
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-          git add helm/flask/values-dev.yaml
-          git commit -m "Update image tag to ${{ github.event.inputs.image_tag }}"
-          git push
+          git add helm/flask/values-dev.yaml helm/flask/values-prod.yaml
+
+          # Commit only if there are changes
+          if ! git diff --cached --quiet; then
+            git commit -m "Update image tag to ${{ github.event.inputs.image_tag }}"
+            git push
+          else
+            echo "No changes to commit."
+          fi
